@@ -6,6 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "sudipta_2006";
 const login = async (req, res) => {
   try {
     const { mobile, password } = req.body;
+
     if (!mobile || !password) {
       return res
         .status(400)
@@ -23,6 +24,7 @@ const login = async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(password, student.password);
+    console.log(isMatch);
 
     if (!isMatch) {
       return res

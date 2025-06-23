@@ -15,6 +15,7 @@ import liveClassRoutesForStudents from "./routes/student-routes/live-classes.js"
 import profileRoutes from "./routes/student-routes/profile.js";
 import videoRoutesForStudents from "./routes/student-routes/Video.js";
 import pdfRoutesForStudents from "./routes/student-routes/pdfRoutes.js";
+import teacherRoutes from "./routes/admin-routes/teacherRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -44,6 +45,7 @@ app.use("/api/admin/addpdf", pdfRoutes);
 app.use("/api/admin/courses", courseRoutes);
 app.use("/api/admin/live-class", liveClassRoutes);
 app.use("/api/admin/videos", videoRoutes);
+app.use("/api/admin/teachers", teacherRoutes);
 // student routes
 app.use("/api/student/auth", authRoutes);
 app.use("/api/student/profile", profileRoutes);

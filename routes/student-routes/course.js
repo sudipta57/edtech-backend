@@ -7,8 +7,8 @@ import { GetVideosForCourse } from "../../controllers/student-controllers/videoC
 import AuthMiddleware from "../../middlewares/studentMiddleware/authMiddleware.js";
 const router = express.Router();
 
+router.get("/get-my-course", AuthMiddleware, getAllCourses);
 router.get("/videos", AuthMiddleware, GetVideosForCourse);
 router.get("/get-study-metarial", AuthMiddleware, GetStudyMaterial);
-router.get("/", AuthMiddleware, getAllCourses);
 
 export default router;

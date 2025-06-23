@@ -27,6 +27,10 @@ const videoSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course", // optional: if you have a course model
     },
+    teacher: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Teacher", // optional: if you have a course model
+    },
     length: {
       type: Number,
     },

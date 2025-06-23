@@ -139,7 +139,8 @@ export const getPresignedUpload = async (req, res) => {
 };
 
 export const saveUploadedVideo = async (req, res) => {
-  const { title, description, course, liveClassId, guid, length } = req.body;
+  const { title, description, course, liveClassId, guid, length, teacher } =
+    req.body;
 
   if (!title || !guid || !course) {
     return res.status(400).json({ error: "Missing required fields." });
@@ -157,6 +158,7 @@ export const saveUploadedVideo = async (req, res) => {
       videoUrl: hlsUrl,
       thumbnailUrl,
       length,
+      teacher,
     });
 
     await video.save();
