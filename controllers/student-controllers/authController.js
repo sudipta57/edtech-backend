@@ -31,10 +31,19 @@ const login = async (req, res) => {
         .status(401)
         .json({ message: "Invalid student ID or password." });
     }
+    console.log(student);
+
+    const jwtStudent = {
+      _id: student._id,
+      studentName: student.studentName,
+      stream: student.receiptDetails?.stream,
+      mobile: student.mobile,
+      email: student.email,
+    };
 
     const token = jwt.sign(
       {
-        student,
+        student: jwtStudent,
       },
       JWT_SECRET,
       { expiresIn: "7d" }

@@ -5,6 +5,8 @@ import {
   getStudentsByCourseId,
   getStudentAttendanceByLiveClassId,
   getPresentStudents,
+  updateLiveClass,
+  deleteLiveClass,
 } from "../../controllers/admin-controllers/liveClassController.js";
 
 const router = express.Router();
@@ -19,5 +21,9 @@ router.get("/get-students/:courseId", getStudentsByCourseId);
 router.post("/student-attendance/", getStudentAttendanceByLiveClassId);
 
 router.get("/get-present-students/:liveClassId", getPresentStudents);
+
+router.put("/update/", updateLiveClass);
+
+router.delete("/delete/", deleteLiveClass);
 
 export default router;

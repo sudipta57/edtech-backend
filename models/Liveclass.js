@@ -16,7 +16,11 @@ const liveClassSchema = new mongoose.Schema({
     ref: "Course",
     required: true,
   },
-
+  teacher: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Teacher", // optional: if you have a course model
+    required: true,
+  },
   scheduledTime: {
     type: Date, // You can use ISO string or combine into Date
     required: true,

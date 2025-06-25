@@ -1,8 +1,11 @@
 import LiveClass from "../../models/Liveclass.js";
 import Student from "../../models/Student.js";
+import Video from "../../models/Video.js";
+import axios from "axios";
+
 export const createLiveClass = async (req, res) => {
   try {
-    const { title, description, course, scheduledTime } = req.body;
+    const { title, description, course, scheduledTime, teacher } = req.body;
 
     const roomName = `live_${title.replace(
       /\s+/g,
@@ -17,6 +20,7 @@ export const createLiveClass = async (req, res) => {
       course,
       scheduledTime,
       roomName: meetingLink,
+      teacher,
     });
 
     await newClass.save();
@@ -34,7 +38,6 @@ export const createLiveClass = async (req, res) => {
 export const getLiveClassesByFilters = async (req, res) => {
   try {
     const { courseId, title, date } = req.query;
-    console.log(courseId, title, date);
 
     // Validate that courseId is provided
     if (!courseId) {
@@ -63,11 +66,12 @@ export const getLiveClassesByFilters = async (req, res) => {
     }
 
     const videos = await LiveClass.find(filter)
-      .select("-bunnyGuid -updatedAt -createdAt -__v -roomName")
+      .select("-updatedAt -createdAt -__v ")
       .populate({
         path: "videoId",
-        select: "title videoUrl thumbnailUrl", // Only include these from Video
+        select: "thumbnailUrl", // Only include these from Video
       })
+      .populate("teacher", "-createdAt -password -subject -__v -phone")
       .sort({ createdAt: -1 });
 
     res.status(200).json(videos);
@@ -129,5 +133,73 @@ export const getPresentStudents = async (req, res) => {
   } catch (err) {
     console.error("Error fetching present students:", err);
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const updateLiveClass = async (req, res) => {
+  const { _id, title, description, course, teacher } = req.body;
+
+  try {
+    const updateData = {
+      title,
+      description,
+      course,
+      teacher,
+    };
+    const updatedClass = await LiveClass.findByIdAndUpdate(_id, updateData, {
+      new: true,
+    });
+    if (!updatedClass) {
+      return res.status(404).json({ error: "Live class not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "Live class updated", liveClass: updatedClass });
+  } catch (err) {
+    console.error("Error updating live class:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const deleteLiveClass = async (req, res) => {
+  const { liveClassId } = req.body;
+  try {
+    if (!liveClassId) {
+      return res.status(400).json({ error: "liveClassId is required" });
+    }
+    const deletedClass = await LiveClass.findByIdAndDelete(liveClassId);
+    if (!deletedClass) {
+      return res.status(404).json({ error: "Live class not found" });
+    }
+    // If there are other related data to delete, do it here
+    if (deletedClass.videoId) {
+      try {
+        const video = await Video.findByIdAndDelete(deletedClass.videoId);
+        if (video && video.bunnyGuid) {
+          try {
+            await axios.delete(
+              `https://video.bunnycdn.com/library/${process.env.LIBRARY_ID}/videos/${video.bunnyGuid}`,
+              {
+                headers: {
+                  AccessKey: process.env.BUNNY_API_KEY,
+                },
+              }
+            );
+          } catch (bunnyError) {
+            console.error("Error deleting from Bunny.net:", bunnyError);
+            // Continue with database deletion even if Bunny.net deletion fails
+          }
+        }
+      } catch (videoErr) {
+        console.error("Error deleting associated video:", videoErr);
+      }
+    }
+    res.status(200).json({
+      message: "Live class deleted successfully",
+      liveClass: deletedClass,
+    });
+  } catch (err) {
+    console.error("Error deleting live class:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };

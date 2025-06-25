@@ -8,14 +8,14 @@ import courseRoutes from "./routes/admin-routes/courseRoute.js";
 import liveClassRoutes from "./routes/admin-routes/liveClassRoute.js";
 import pdfRoutes from "./routes/admin-routes/pdfRoute.js";
 import studentRoutes from "./routes/admin-routes/studentRoutes.js";
+import teacherRoutes from "./routes/admin-routes/teacherRoutes.js";
 import videoRoutes from "./routes/admin-routes/videoRoutes.js";
 import authRoutes from "./routes/student-routes/auth.js";
 import StudentCourseRoutes from "./routes/student-routes/course.js";
 import liveClassRoutesForStudents from "./routes/student-routes/live-classes.js";
+import pdfRoutesForStudents from "./routes/student-routes/pdfRoutes.js";
 import profileRoutes from "./routes/student-routes/profile.js";
 import videoRoutesForStudents from "./routes/student-routes/Video.js";
-import pdfRoutesForStudents from "./routes/student-routes/pdfRoutes.js";
-import teacherRoutes from "./routes/admin-routes/teacherRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -50,7 +50,7 @@ app.use("/api/admin/teachers", teacherRoutes);
 app.use("/api/student/auth", authRoutes);
 app.use("/api/student/profile", profileRoutes);
 app.use("/api/student/course", StudentCourseRoutes);
-app.use("/api/student/live-classes/", liveClassRoutesForStudents);
+app.use("/api/student/live-classes", liveClassRoutesForStudents);
 app.use("/api/student/videos", videoRoutesForStudents);
 app.use("/api/student/pdfs", pdfRoutesForStudents);
 
