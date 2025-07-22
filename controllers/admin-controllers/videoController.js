@@ -134,6 +134,8 @@ export const getPresignedUpload = async (req, res) => {
     });
   } catch (err) {
     console.error("Presign error:", err.message);
+    console.log(err);
+
     res.status(500).json({ error: "Failed to generate presigned upload" });
   }
 };

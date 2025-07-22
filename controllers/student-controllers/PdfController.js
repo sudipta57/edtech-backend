@@ -9,11 +9,7 @@ export const downloadPdf = async (req, res) => {
     // Optional: Validate that user has access to this PDF
     const pdf = await Pdf.findById(pdfId).populate("videoId").select("+course");
     if (!pdf) return res.status(404).json({ message: "PDF not found" });
-
-    if (
-      user.student?.receiptDetails?.stream.toString() !==
-      pdf.videoId.course.toString()
-    ) {
+    if (user.student?.stream.toString() !== pdf.videoId.course.toString()) {
       return res
         .status(403)
         .json({ message: "You are not enrolled in this course" });
